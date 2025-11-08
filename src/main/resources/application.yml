@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankdb
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+liquibase:
+  change-log: classpath:db/migration/db.changelog-master.yaml
+
+jwt:
+  secret: your-very-secret-key-change-me
+  expiration: 3600000 # ms
+
+server:
+  port: 8080
