@@ -1,5 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: db/migration/1-create-users-table.yaml
-  - include:
-      file: db/migration/2-create-cards-table.yaml
