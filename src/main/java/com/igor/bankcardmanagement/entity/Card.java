@@ -1,15 +1,16 @@
 package com.igor.bankcardmanagement.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cards")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Card {
 
     @Id
@@ -17,18 +18,18 @@ public class Card {
     private Long id;
 
     private String encryptedNumber;
+
     private String maskedNumber;
 
     private String owner;
 
     private String expirationDate;
 
-    @Enumerated(EnumType.STRING)
-    private CardStatus status;
+    private String status;
 
-    private Double balance;
+    private BigDecimal balance;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_card_user"))
     private User user;
 }

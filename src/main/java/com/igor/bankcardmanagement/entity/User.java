@@ -1,15 +1,15 @@
 package com.igor.bankcardmanagement.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class User {
 
     @Id
@@ -17,8 +17,9 @@ public class User {
     private Long id;
 
     private String username;
+
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private String role;
 }
+
