@@ -25,6 +25,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public User update(User user) {
+        if (user.getId() == null || !userRepository.existsById(user.getId())) {
+            return null;
+        }
+        return userRepository.save(user);
+    }
+
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
