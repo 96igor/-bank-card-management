@@ -4,47 +4,53 @@ import com.igor.bankcardmanagement.dto.CardDto;
 import com.igor.bankcardmanagement.entity.Card;
 import com.igor.bankcardmanagement.mapper.CardMapper;
 import com.igor.bankcardmanagement.service.CardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/cards")
+@RequiredArgsConstructor
 public class CardController {
 
     private final CardService cardService;
     private final CardMapper cardMapper;
 
-    // 🔹 Ручной конструктор
-    public CardController(CardService cardService, CardMapper cardMapper) {
-        this.cardService = cardService;
-        this.cardMapper = cardMapper;
-    }
-
     @PostMapping
-    public CardDto create(@RequestBody Card card) {
-        return cardMapper.toDto(cardService.create(card));
+    public CardDto create(@RequestBody CardDto cardDto) {
+        Card card = cardMapper.toEntity(cardDto);
+        Card created = cardService.create(card);
+        return cardMapper.toDto(created);
     }
 
     @GetMapping("/{id}")
-    public CardDto get(@PathVariable Long id) {
+    public CardDto getById(@PathVariable Long id) {
         return cardMapper.toDto(cardService.getById(id));
     }
 
     @GetMapping
-    public List<Card> getAll() {
-        return cardService.getAll();
+    public List<CardDto> getAll() {
+        return cardService.getAll()
+                .stream()
+                .map(cardMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/user/{userId}")
-    public List<Card> getByUserId(@PathVariable Long userId) {
-        return cardService.getByUserId(userId);
+    public List<CardDto> getByUserId(@PathVariable Long userId) {
+        return cardService.getByUserId(userId)
+                .stream()
+                .map(cardMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    @PutMapping("/{id}/balance")
-    public CardDto updateBalance(@PathVariable Long id, @RequestParam BigDecimal balance) {
-        return cardMapper.toDto(cardService.updateBalance(id, balance));
+    @PutMapping("/{cardId}/balance")
+    public CardDto updateBalance(@PathVariable Long cardId, @RequestParam BigDecimal newBalance) {
+        Card updated = cardService.updateBalance(cardId, newBalance);
+        return cardMapper.toDto(updated);
     }
 
     @DeleteMapping("/{id}")
