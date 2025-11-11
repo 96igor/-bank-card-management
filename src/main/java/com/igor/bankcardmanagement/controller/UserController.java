@@ -4,13 +4,12 @@ import com.igor.bankcardmanagement.dto.UserDto;
 import com.igor.bankcardmanagement.entity.User;
 import com.igor.bankcardmanagement.mapper.UserMapper;
 import com.igor.bankcardmanagement.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,10 +20,9 @@ public class UserController {
     private final UserMapper userMapper;
 
     @PostMapping
-    public ResponseEntity<UserDto> create(@Valid @RequestBody UserDto userDto) {
-        User user = userMapper.toEntity(userDto);
-        User saved = userService.create(user);
-        return ResponseEntity.ok(userMapper.toDto(saved));
+    public ResponseEntity<UserDto> create(@RequestBody User user) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(userMapper.toDto(userService.create(user)));
     }
 
     @GetMapping("/{id}")
@@ -35,16 +33,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAll() {
-        List<UserDto> list = userService.getAll().stream()
+    public List<UserDto> getAll() {
+        return userService.getAll().stream()
                 .map(userMapper::toDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(list);
+                .toList();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
-        User user = userMapper.toEntity(userDto);
+    public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody User user) {
         user.setId(id);
         User updated = userService.update(user);
         if (updated == null) return ResponseEntity.notFound().build();

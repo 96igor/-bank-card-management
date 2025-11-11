@@ -2,7 +2,6 @@ package com.igor.bankcardmanagement.mapper;
 
 import com.igor.bankcardmanagement.dto.CardDto;
 import com.igor.bankcardmanagement.entity.Card;
-import com.igor.bankcardmanagement.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +20,7 @@ public class CardMapper {
         return dto;
     }
 
-    public Card toEntity(CardDto dto, User user) {
+    public Card toEntity(CardDto dto) {
         if (dto == null) return null;
         Card card = new Card();
         card.setId(dto.getId());
@@ -30,7 +29,6 @@ public class CardMapper {
         card.setExpirationDate(dto.getExpirationDate());
         card.setStatus(dto.getStatus());
         card.setBalance(dto.getBalance());
-        card.setUser(user);
         return card;
     }
 }
