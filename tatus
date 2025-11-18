@@ -1,0 +1,43 @@
+[1mdiff --git a/src/main/java/com/igor/bankcardmanagement/service/UserService.java b/src/main/java/com/igor/bankcardmanagement/service/UserService.java[m
+[1mindex 2534d21..317ec3f 100644[m
+[1m--- a/src/main/java/com/igor/bankcardmanagement/service/UserService.java[m
+[1m+++ b/src/main/java/com/igor/bankcardmanagement/service/UserService.java[m
+[36m@@ -3,6 +3,7 @@[m [mpackage com.igor.bankcardmanagement.service;[m
+ import com.igor.bankcardmanagement.entity.User;[m
+ import com.igor.bankcardmanagement.repository.UserRepository;[m
+ import lombok.RequiredArgsConstructor;[m
+[32m+[m[32mimport org.springframework.security.crypto.password.PasswordEncoder;[m
+ import org.springframework.stereotype.Service;[m
+ [m
+ import java.util.List;[m
+[36m@@ -12,8 +13,13 @@[m [mimport java.util.List;[m
+ public class UserService {[m
+ [m
+     private final UserRepository userRepository;[m
+[32m+[m[32m    private final PasswordEncoder passwordEncoder;[m
+ [m
+     public User create(User user) {[m
+[32m+[m[32m        // Хешируем пароль перед сохранением[m
+[32m+[m[32m        if (user.getPassword() != null && !user.getPassword().isEmpty()) {[m
+[32m+[m[32m            user.setPassword(passwordEncoder.encode(user.getPassword()));[m
+[32m+[m[32m        }[m
+         return userRepository.save(user);[m
+     }[m
+ [m
+[36m@@ -29,6 +35,16 @@[m [mpublic class UserService {[m
+         if (user.getId() == null || !userRepository.existsById(user.getId())) {[m
+             return null;[m
+         }[m
+[32m+[m[32m        // Если пароль обновляется, хешируем его[m
+[32m+[m[32m        if (user.getPassword() != null && !user.getPassword().isEmpty()) {[m
+[32m+[m[32m            user.setPassword(passwordEncoder.encode(user.getPassword()));[m
+[32m+[m[32m        } else {[m
+[32m+[m[32m            // Если пароль не указан, сохраняем старый[m
+[32m+[m[32m            User existingUser = userRepository.findById(user.getId()).orElse(null);[m
+[32m+[m[32m            if (existingUser != null) {[m
+[32m+[m[32m                user.setPassword(existingUser.getPassword());[m
+[32m+[m[32m            }[m
+[32m+[m[32m        }[m
+         return userRepository.save(user);[m
+     }[m
+ [m
